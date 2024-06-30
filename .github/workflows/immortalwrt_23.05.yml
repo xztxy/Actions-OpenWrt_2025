@@ -86,6 +86,7 @@ jobs:
       id: soft
       run: |
        cd openwrt
+       mkdir -p package/feeds/luci
        rsync -a feeds/luci/applications/passwall2/luci-app-passwall2/* feeds/luci/applications/luci-app-passwall2
        rm -rf feeds/luci/applications/passwall2
        ln -sf ../../../feeds/luci/applications/luci-app-passwall2 package/feeds/luci/luci-app-passwall2
