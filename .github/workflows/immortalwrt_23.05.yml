@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-name: openwrt-23.05-x86_Iptables
+name: immortalwrt_23.05
 
 on:
   repository_dispatch:
@@ -19,10 +19,10 @@ on:
   workflow_dispatch:
 
 env:
-  REPO_URL: https://github.com/openwrt/openwrt.git
+  REPO_URL: https://github.com/immortalwrt/immortalwrt.git
   REPO_BRANCH: openwrt-23.05
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: config/x86/openwrt-23.05/Iptables_23.05.config
+  CONFIG_FILE: config/x86/openwrt-23.05/immortalwrt_23.05.config
    # CONFIG_URL: https://raw.githubusercontent.com/sdhz153/Actions-OpenWrt/main/config/x86/openwrt-23.05/nftables.config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
@@ -70,12 +70,6 @@ jobs:
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Add package
-      id: delete
-      run: |
-        cd openwrt
-        git clone -b main https://github.com/xiaorouji/openwrt-passwall-packages.git package/passwall
-
     - name: Add passwall2
       id: passwall2
       run: |
@@ -88,42 +82,10 @@ jobs:
        echo "luci-app-passwall2" >> .git/info/sparse-checkout
        git pull --depth 1 origin main
 
-    - name: Add app vlmcsd
-      id: appvlmcsd
-      run: |
-       cd openwrt
-       mkdir -p feeds/luci/applications/luci-app-vlmcsd
-       cd feeds/luci/applications/luci-app-vlmcsd
-       git init
-       git remote add origin https://github.com/immortalwrt/luci.git
-       git config core.sparsecheckout true
-       echo "applications/luci-app-vlmcsd" >> .git/info/sparse-checkout
-       git pull --depth 1 origin openwrt-23.05
-
-    - name: Add vlmcsd
-      id: vlmcsd
-      run: |
-       cd openwrt
-       mkdir -p package/vlmcsd
-       cd package/vlmcsd
-       git init
-       git remote add origin https://github.com/immortalwrt/packages.git
-       git config core.sparsecheckout true
-       echo "net/vlmcsd" >> .git/info/sparse-checkout
-       git pull --depth 1 origin openwrt-23.05
-
     - name: Soft connection
       id: soft
       run: |
        cd openwrt
-       mkdir -p package/feeds/luci
-       mv feeds/luci/applications/luci-app-vlmcsd/applications/luci-app-vlmcsd/* feeds/luci/applications/luci-app-vlmcsd
-       rm -rf feeds/luci/applications/luci-app-vlmcsd/applications
-       rm -rf feeds/luci/applications/luci-app-vlmcsd/.git
-       ln -sf ../../../feeds/luci/applications/luci-app-vlmcsd package/feeds/luci/luci-app-vlmcsd
-       mv package/vlmcsd/net/vlmcsd/* package/vlmcsd
-       rm -rf package/vlmcsd/net
-       rm -rf package/vlmcsd/.git
        rsync -a feeds/luci/applications/passwall2/luci-app-passwall2/* feeds/luci/applications/luci-app-passwall2
        rm -rf feeds/luci/applications/passwall2
        ln -sf ../../../feeds/luci/applications/luci-app-passwall2 package/feeds/luci/luci-app-passwall2
@@ -131,8 +93,9 @@ jobs:
     - name: apply patches
       run: |
        cd openwrt
+       git apply $GITHUB_WORKSPACE/patches/nftables_passwall2.patch
        git apply $GITHUB_WORKSPACE/patches/golang1.22.0.patch
-       git apply $GITHUB_WORKSPACE/patches/Iptables_passwall2.patch
+
 
  #   - name: update golang
    #   run: |
@@ -146,16 +109,6 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
-
-    - name: Merge duplicates
-      run: |
-        cd openwrt
-        sudo rm -rf package/feeds/packages/sing-box
-        sudo rm -rf feeds/packages/net/sing-box
-        sudo rm -rf package/feeds/packages/v2ray-core
-        sudo rm -rf feeds/packages/net/v2ray-core
-        sudo rm -rf package/feeds/packages/xray-core
-        sudo rm -rf feeds/packages/net/xray-core
 
     - name: Load custom configuration
       run: |
@@ -194,7 +147,7 @@ jobs:
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
-        echo "FILE_DATE=_$(date +"23.05-Iptables"-"%Y%m%d%H%M")" >> $GITHUB_ENV
+        echo "FILE_DATE=_$(date +"23.05-immortalwrt"-"%Y%m%d%H%M")" >> $GITHUB_ENV
 
     - name: Check space usage
       if: (!cancelled())
@@ -227,7 +180,7 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo "release_tag=$(date +"%Y.%m.%d-%H%M"-"openwrt-23.05-Iptables")" >> $GITHUB_OUTPUT
+        echo "release_tag=$(date +"%Y.%m.%d-%H%M"-"openwrt-23.05-immortalwrt")" >> $GITHUB_OUTPUT
         touch release.txt
         [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
