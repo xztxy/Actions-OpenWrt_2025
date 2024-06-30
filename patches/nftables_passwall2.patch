@@ -1,0 +1,77 @@
+From 5bde27980b5d35289abe968de3a0d91e44a2bebb Mon Sep 17 00:00:00 2001
+From: sdhz151 <yanghui140@gmail.com>
+Date: Tue, 25 Jun 2024 06:39:20 +0800
+Subject: [PATCH] Update Makefile
+
+---
+ feeds/luci/applications/luci-app-passwall2/Makefile | 33 +++------------------------------
+ 1 file changed, 3 insertions(+), 30 deletions(-)
+
+diff --git a/feeds/luci/applications/luci-app-passwall2/Makefile b/feeds/luci/applications/luci-app-passwall2/Makefile
+index 92c5ab93..f7159dce 100644
+--- a/feeds/luci/applications/luci-app-passwall2/Makefile
++++ b/feeds/luci/applications/luci-app-passwall2/Makefile
+@@ -9,8 +9,6 @@ PKG_VERSION:=1.29-1
+ PKG_RELEASE:=
+ 
+ PKG_CONFIG_DEPENDS:= \
+-	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
+-	CONFIG_PACKAGE_$(PKG_NAME)_Nftables_Transparent_Proxy \
+ 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Haproxy \
+ 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Hysteria \
+ 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_IPv6_Nat \
+@@ -31,7 +29,7 @@ LUCI_PKGARCH:=all
+ LUCI_DEPENDS:=+coreutils +coreutils-base64 +coreutils-nohup +curl \
+ 	+ip-full +libuci-lua +lua +luci-compat +luci-lib-jsonc +resolveip +tcping \
+ 	+xray-core +v2ray-geoip +v2ray-geosite \
+-	+unzip \
++	+unzip +ipt2socks +kmod-nft-socket +kmod-nft-tproxy +kmod-nft-nat \
+ 	+PACKAGE_$(PKG_NAME)_INCLUDE_IPv6_Nat:ip6tables-mod-nat
+ 
+ define Package/$(PKG_NAME)/config
+@@ -40,35 +38,10 @@ menu "Configuration"
+ config PACKAGE_$(PKG_NAME)_INCLUDE_IPv6_Nat
+ 	depends on PACKAGE_ip6tables
+ 	bool "Include IPv6 Nat"
+-	default n
++	default y
+ 
+ if PACKAGE_$(PKG_NAME)
+ 
+-config PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy
+-	bool "Iptables Transparent Proxy"
+-	select PACKAGE_dnsmasq-full
+-	select PACKAGE_dnsmasq_full_ipset
+-	select PACKAGE_ipset
+-	select PACKAGE_iptables
+-	select PACKAGE_iptables-nft
+-	select PACKAGE_iptables-zz-legacy
+-	select PACKAGE_iptables-mod-conntrack-extra
+-	select PACKAGE_iptables-mod-iprange
+-	select PACKAGE_iptables-mod-socket
+-	select PACKAGE_iptables-mod-tproxy
+-	select PACKAGE_kmod-ipt-nat
+-	default y if ! PACKAGE_firewall4
+-
+-config PACKAGE_$(PKG_NAME)_Nftables_Transparent_Proxy
+-	bool "Nftables Transparent Proxy"
+-	select PACKAGE_dnsmasq-full
+-	select PACKAGE_dnsmasq_full_nftset
+-	select PACKAGE_nftables
+-	select PACKAGE_kmod-nft-socket
+-	select PACKAGE_kmod-nft-tproxy
+-	select PACKAGE_kmod-nft-nat
+-	default y if PACKAGE_firewall4
+-
+ config PACKAGE_$(PKG_NAME)_INCLUDE_Haproxy
+ 	bool "Include Haproxy"
+ 	select PACKAGE_haproxy
+@@ -83,7 +56,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
+ 	bool "Include NaiveProxy"
+ 	depends on !(arc||(arm&&TARGET_gemini)||armeb||mips||mips64||powerpc)
+ 	select PACKAGE_naiveproxy
+-	default n
++	default y
+ 
+ config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Client
+ 	bool "Include Shadowsocks Libev Client"
