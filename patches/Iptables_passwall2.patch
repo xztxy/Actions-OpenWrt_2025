@@ -35,7 +35,7 @@ index 92c5ab93..6aaaff8f 100644
  	+ip-full +libuci-lua +lua +luci-compat +luci-lib-jsonc +resolveip +tcping \
  	+xray-core +v2ray-geoip +v2ray-geosite \
 -	+unzip \
-+	+unzip +iptables-zz-legacy +iptables-mod-conntrack-extra +iptables-mod-iprange +iptables-mod-socket +iptables-mod-tproxy +kmod-ipt-nat \
++	+unzip +ipset +ipt2socks +iptables +iptables-nft +iptables-zz-legacy +iptables-mod-conntrack-extra +iptables-mod-iprange +iptables-mod-socket +iptables-mod-tproxy +kmod-ipt-nat \
  	+PACKAGE_$(PKG_NAME)_INCLUDE_IPv6_Nat:ip6tables-mod-nat
  
  define Package/$(PKG_NAME)/config
