@@ -1,14 +1,14 @@
-From 95f1eb3f9b78720f85ff817f748ff76ef42f10dd Mon Sep 17 00:00:00 2001
+From 39fe6b32b1b816338e8771ac9c683fe625c1ef6a Mon Sep 17 00:00:00 2001
 From: sdhz151 <yanghui140@gmail.com>
-Date: Tue, 9 Jul 2024 01:50:17 +0800
+Date: Tue, 9 Jul 2024 02:10:02 +0800
 Subject: [PATCH] Update Makefile
 
 ---
- feeds/luci/applications/luci-app-passwall2/Makefile | 59 ++-----------------------------------
- 1 file changed, 3 insertions(+), 56 deletions(-)
+ feeds/luci/applications/luci-app-passwall2/Makefile | 57 ++-----------------------------------
+ 1 file changed, 2 insertions(+), 55 deletions(-)
 
 diff --git a/feeds/luci/applications/luci-app-passwall2/Makefile b/feeds/luci/applications/luci-app-passwall2/Makefile
-index 92c5ab93..cff93924 100644
+index 92c5ab93..6aaaff8f 100644
 --- a/feeds/luci/applications/luci-app-passwall2/Makefile
 +++ b/feeds/luci/applications/luci-app-passwall2/Makefile
 @@ -9,18 +9,12 @@ PKG_VERSION:=1.29-1
@@ -23,8 +23,7 @@ index 92c5ab93..cff93924 100644
  	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy \
 -	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Client \
 -	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Server \
--	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Client \
-+        CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Client \
+ 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Client \
  	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Server \
 -	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client \
 -	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server \
