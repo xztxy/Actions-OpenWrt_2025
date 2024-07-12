@@ -82,31 +82,30 @@ jobs:
        echo "luci-app-passwall2" >> .git/info/sparse-checkout
        git pull --depth 1 origin main
 
+    - name: update golang
+      run: |
+       cd openwrt
+       rm -rf feeds/packages/lang/golang/*
+       rm -rf package/feeds/packages/golang
+       cd feeds/packages/lang/golang
+       git init
+       git remote add origin https://github.com/openwrt/packages.git
+       git config core.sparsecheckout true
+       echo "lang/golang" >> .git/info/sparse-checkout
+       git pull --depth 1 origin master
+
     - name: Soft connection
-      id: soft
       run: |
        cd openwrt
        mkdir -p package/feeds/luci
        rsync -a feeds/luci/applications/passwall2/luci-app-passwall2/* feeds/luci/applications/luci-app-passwall2
        rm -rf feeds/luci/applications/passwall2
        ln -sf ../../../feeds/luci/applications/luci-app-passwall2 package/feeds/luci/luci-app-passwall2
-
-    - name: apply patches
-      run: |
-       cd openwrt
+       rsync -a feeds/packages/lang/golang/lang/golang/* feeds/packages/lang/golang
+       rm -rf feeds/packages/lang/golang/lang
+       rm -rf feeds/packages/lang/golang/.git
+       ln -sf ../../../feeds/packages/lang/golang package/feeds/packages/golang
        git apply $GITHUB_WORKSPACE/patches/nftables_passwall2.patch
-       git apply $GITHUB_WORKSPACE/patches/golang1.22.0.patch
-
-
- #   - name: update golang
-   #   run: |
-   #     cd openwrt
-    #    sudo rm -rf feeds/packages/lang/golang
-     #   svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang feeds/packages/lang/golang
-     #   git apply $GITHUB_WORKSPACE/patches/golang1.21.2.patch
-      #  git apply $GITHUB_WORKSPACE/patches/Revertgolang1.patch
-      #  git apply $GITHUB_WORKSPACE/patches/Revertgolang2.patch
-    #  run: cd openwrt && git apply $GITHUB_WORKSPACE/patches/golang1.21.4.patch
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
