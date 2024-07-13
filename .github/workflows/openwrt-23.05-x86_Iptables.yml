@@ -76,6 +76,19 @@ jobs:
         cd openwrt
         git clone -b main https://github.com/xiaorouji/openwrt-passwall-packages.git package/passwall
 
+    - name: Install feeds
+      run: cd openwrt && ./scripts/feeds install -a
+
+    - name: Merge duplicates
+      run: |
+        cd openwrt
+        sudo rm -rf package/feeds/packages/sing-box
+        sudo rm -rf feeds/packages/net/sing-box
+        sudo rm -rf package/feeds/packages/v2ray-core
+        sudo rm -rf feeds/packages/net/v2ray-core
+        sudo rm -rf package/feeds/packages/xray-core
+        sudo rm -rf feeds/packages/net/xray-core
+
     - name: Add passwall2
       id: passwall2
       run: |
@@ -112,6 +125,18 @@ jobs:
        echo "net/vlmcsd" >> .git/info/sparse-checkout
        git pull --depth 1 origin openwrt-23.05
 
+    - name: update golang
+      run: |
+       cd openwrt
+       rm -rf feeds/packages/lang/golang/*
+       rm -rf package/feeds/packages/golang
+       cd feeds/packages/lang/golang
+       git init
+       git remote add origin https://github.com/openwrt/packages.git
+       git config core.sparsecheckout true
+       echo "lang/golang" >> .git/info/sparse-checkout
+       git pull --depth 1 origin master
+
     - name: Soft connection
       id: soft
       run: |
@@ -127,35 +152,11 @@ jobs:
        rsync -a feeds/luci/applications/passwall2/luci-app-passwall2/* feeds/luci/applications/luci-app-passwall2
        rm -rf feeds/luci/applications/passwall2
        ln -sf ../../../feeds/luci/applications/luci-app-passwall2 package/feeds/luci/luci-app-passwall2
-
-    - name: apply patches
-      run: |
-       cd openwrt
-       git apply $GITHUB_WORKSPACE/patches/golang1.22.0.patch
+       rsync -a feeds/packages/lang/golang/lang/golang/* feeds/packages/lang/golang
+       rm -rf feeds/packages/lang/golang/lang
+       rm -rf feeds/packages/lang/golang/.git
+       ln -sf ../../../feeds/packages/lang/golang package/feeds/packages/golang
        git apply $GITHUB_WORKSPACE/patches/Iptables_passwall2.patch
-
- #   - name: update golang
-   #   run: |
-   #     cd openwrt
-    #    sudo rm -rf feeds/packages/lang/golang
-     #   svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang feeds/packages/lang/golang
-     #   git apply $GITHUB_WORKSPACE/patches/golang1.21.2.patch
-      #  git apply $GITHUB_WORKSPACE/patches/Revertgolang1.patch
-      #  git apply $GITHUB_WORKSPACE/patches/Revertgolang2.patch
-    #  run: cd openwrt && git apply $GITHUB_WORKSPACE/patches/golang1.21.4.patch
-
-    - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
-
-    - name: Merge duplicates
-      run: |
-        cd openwrt
-        sudo rm -rf package/feeds/packages/sing-box
-        sudo rm -rf feeds/packages/net/sing-box
-        sudo rm -rf package/feeds/packages/v2ray-core
-        sudo rm -rf feeds/packages/net/v2ray-core
-        sudo rm -rf package/feeds/packages/xray-core
-        sudo rm -rf feeds/packages/net/xray-core
 
     - name: Load custom configuration
       run: |
