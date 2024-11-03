@@ -81,7 +81,6 @@ jobs:
         cd openwrt
         git clone -b main https://github.com/xiaorouji/openwrt-passwall-packages.git package/passwall
         git clone -b main https://github.com/xiaorouji/openwrt-passwall.git package/passwall/p
-        git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
