@@ -14,8 +14,8 @@ name: immortalwrt_23.05
 
 on:
   repository_dispatch:
-  schedule:
-    - cron: 0 21 * * *
+#  schedule:
+#    - cron: 0 21 * * *
   workflow_dispatch:
 
 env:
