@@ -80,7 +80,7 @@ jobs:
       run: |
         cd openwrt
         git clone -b main https://github.com/xiaorouji/openwrt-passwall-packages.git package/passwall
-        git clone -b main https://github.com/xiaorouji/openwrt-passwall.git package/passwall/p
+     #   git clone -b main https://github.com/xiaorouji/openwrt-passwall.git package/passwall/p
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
@@ -202,8 +202,8 @@ jobs:
     - name: apply patches
       run: |
        cd openwrt 
-       git apply $GITHUB_WORKSPACE/patches/nftables_passwall.patch
        git apply $GITHUB_WORKSPACE/patches/nftables_passwall2.patch
+      # git apply $GITHUB_WORKSPACE/patches/nftables_passwall.patch
       # git apply $GITHUB_WORKSPACE/patches/golang1.22.0.patch
   
     - name: Load custom configuration
