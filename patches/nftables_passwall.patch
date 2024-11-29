@@ -12,7 +12,7 @@ index 7543450761..e563d40103 100644
 --- a/package/passwall/p/luci-app-passwall/Makefile
 +++ b/package/passwall/p/luci-app-passwall/Makefile
 @@ -10,8 +10,6 @@ PKG_VERSION:=4.77-6
- PKG_RELEASE:=3
+ PKG_RELEASE:=1
  
  PKG_CONFIG_DEPENDS:= \
 -	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
@@ -88,5 +88,5 @@ index 7543450761..e563d40103 100644
 -	default n
 +	default y
  
- config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
- 	bool "Include V2ray-Plugin (Shadowsocks Plugin)"
+ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Geoview
+ 	bool "Include V2ray_Geoview"
